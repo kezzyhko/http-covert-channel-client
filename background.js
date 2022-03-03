@@ -1,3 +1,6 @@
+importScripts("bignumber.js", "factorial.js");
+
+
 
 headersToIgnore = ['Date', 'Server', 'Vary', 'Set-Cookie']
 
@@ -8,6 +11,8 @@ function extractCovertMessage(e) {
 		if (headersToIgnore.includes(header.name)) { continue }
 		headersKeys.push(header.name)
 	}
+
+	headersAmount = headersKeys.length
 
 	sortedHeadersKeys = [...headersKeys]
 	sortedHeadersKeys.sort()
@@ -21,13 +26,24 @@ function extractCovertMessage(e) {
 
 	recievedNumber = remainders.reduceRight(
 		function(result, remainder, index) {
-			headersLeft = remainders.length - index
+			headersLeft = headersAmount - index
 			return result * headersLeft + remainder
 		},
 		0
 	)
 
-	console.log(recievedNumber)
+	origin = new URL(e.url).origin
+	chrome.storage.local.get([origin], function(result) {
+		info = result[origin] || {
+			number: "0",
+			multiplier: "1"
+		}
+		maxNumber = factorial(headersAmount)
+		info.multiplier = new BigNumber(info.multiplier)
+		info.number = info.multiplier.multiply(recievedNumber).add(info.number).toString()
+		info.multiplier = info.multiplier.multiply(maxNumber).toString()
+		chrome.storage.local.set({[origin]: info})
+	});
 
 }
 
