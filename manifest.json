@@ -1,8 +1,8 @@
 {
+	"manifest_version": 3,
 	"name": "HTTP header permutation covert channel",
 	"description": "A covert channel based on permutation of HTTP headers",
 	"version": "1.0",
-	"manifest_version": 3,
 	"action": {
 		"default_popup": "popup.html"
 	}
