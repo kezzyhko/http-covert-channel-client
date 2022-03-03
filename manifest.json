@@ -3,7 +3,18 @@
 	"name": "HTTP header permutation covert channel",
 	"description": "A covert channel based on permutation of HTTP headers",
 	"version": "1.0",
+	"permissions": [
+		"activeTab",
+		"webRequest"
+	],
 	"action": {
 		"default_popup": "popup.html"
-	}
+	},
+	"background": {
+	  "service_worker": "background.js"
+	},
+	"host_permissions": [
+		"http://*/*",
+		"https://*/*"
+	]
 }
