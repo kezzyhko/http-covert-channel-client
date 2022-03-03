@@ -7,7 +7,14 @@ clearButton.addEventListener("click", async () => {
 
 
 function updateMessage(bits) {
-	message.innerText = bits
+	byteLen = 8
+	bytes = []
+	for (pos = bits.length - byteLen; pos > 0; pos -= byteLen) {
+		byte = bits.substr(pos, byteLen)
+		byte = parseInt(byte, 2)
+		bytes.push(byte)
+	}
+	message.innerText = String.fromCharCode(...bytes) + "\n" + bits
 }
 
 
