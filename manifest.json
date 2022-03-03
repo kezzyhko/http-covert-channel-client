@@ -6,7 +6,8 @@
 	"permissions": [
 		"activeTab",
 		"webRequest",
-		"storage"
+		"storage",
+		"cookies"
 	],
 	"action": {
 		"default_popup": "popup.html"

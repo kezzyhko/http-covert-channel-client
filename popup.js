@@ -1,11 +1,4 @@
 
-clearButton.addEventListener("click", async () => {
-	message.innerText = ""
-	chrome.storage.local.clear()
-})
-
-
-
 function updateMessage(bits) {
 	byteLen = 8
 	bytes = []
@@ -25,12 +18,20 @@ chrome.tabs.query({currentWindow: true, active: true}, function(tabs) {
 
 	chrome.storage.local.get([origin], function(result) {
 		updateMessage(result[origin] || "")
-	});
+	})
 
 	chrome.storage.onChanged.addListener(function (changes, namespace) {
 		if (changes[origin] !== undefined) { return }
 		updateMessage(changes[origin].newValue)
-	});
+	})
 
+	clearButton.addEventListener("click", async () => {
+		message.innerText = ""
+		chrome.storage.local.clear()
+		chrome.cookies.remove({
+			url: origin,
+			name: "sessionid"
+		})
+	})
 
 })
