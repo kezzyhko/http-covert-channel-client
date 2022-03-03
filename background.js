@@ -2,6 +2,12 @@ importScripts("bignumber.js", "factorial.js");
 
 
 
+chrome.runtime.onSuspend.addListener(function() {
+	chrome.storage.local.clear()
+})
+
+
+
 headersToIgnore = ['Date', 'Server', 'Vary', 'Set-Cookie']
 
 function extractCovertMessage(e) {
