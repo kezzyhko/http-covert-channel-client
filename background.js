@@ -1,11 +1,11 @@
 
 function extractCovertMessage(e) {
-  console.log(e.responseHeaders)
+	console.log(e.responseHeaders)
 }
 
 
 chrome.webRequest.onHeadersReceived.addListener(
-  extractCovertMessage,
-  { urls: ['<all_urls>'] },
-  ["responseHeaders"]
+	extractCovertMessage,
+	{ urls: ['<all_urls>'] },
+	["responseHeaders"]
 );
