@@ -22,7 +22,7 @@ chrome.tabs.query({currentWindow: true, active: true}, function(tabs) {
 
 	chrome.storage.onChanged.addListener(function (changes, namespace) {
 		if (changes[origin] === undefined) { return }
-		updateMessage(changes[origin].newValue)
+		updateMessage(changes[origin].newValue || "")
 	})
 
 	clearButton.addEventListener("click", async () => {
