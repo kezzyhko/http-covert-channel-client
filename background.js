@@ -8,4 +8,4 @@ chrome.webRequest.onHeadersReceived.addListener(
 	extractCovertMessage,
 	{ urls: ['<all_urls>'] },
 	["responseHeaders"]
-);
+)
