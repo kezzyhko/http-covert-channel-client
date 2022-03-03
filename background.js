@@ -1,4 +1,19 @@
-importScripts("bignumber.js", "factorial.js");
+
+hiddenBitsAmountCache = [0];
+
+// equivalent to Math.trunc(Math.log2(factorial(headersAmount))), but does not overflow due to factorial when there are many headers
+function getHiddenBitsAmount(headersAmount) {
+	c = 0
+	for (i = headersAmount; i >= 0; i--) {
+		if (hiddenBitsAmountCache[i] !== undefined) {
+			c += hiddenBitsAmountCache[i]
+			break
+		}
+		c += Math.log2(i)
+	}
+	hiddenBitsAmountCache[headersAmount] = c
+	return Math.trunc(c)
+}
 
 
 
@@ -38,16 +53,13 @@ function extractCovertMessage(e) {
 		0
 	)
 
+	bitsAmount = getHiddenBitsAmount(headersAmount)
+	recievedBits = recievedNumber.toString(2).padStart(bitsAmount, 0)
+
 	origin = new URL(e.url).origin
 	chrome.storage.local.get([origin], function(result) {
-		info = result[origin] || {
-			number: "0",
-			multiplier: "1"
-		}
-		maxNumber = factorial(headersAmount)
-		info.multiplier = new BigNumber(info.multiplier)
-		info.number = info.multiplier.multiply(recievedNumber).add(info.number).toString()
-		info.multiplier = info.multiplier.multiply(maxNumber).toString()
+		info = result[origin] || ""
+		info = recievedBits + info
 		chrome.storage.local.set({[origin]: info})
 	});
 
