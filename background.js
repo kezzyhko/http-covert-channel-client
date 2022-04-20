@@ -17,14 +17,41 @@ function getHiddenBitsAmount(headersAmount) {
 
 
 
+let localStorageBlock = {}
+
+function updateLocalStorage(origin, position, recievedBits) {
+	if (localStorageBlock[origin]) {
+		setTimeout(updateLocalStorage, 10, origin, position, recievedBits)
+		return;
+	}
+	localStorageBlock[origin] = true
+	chrome.storage.local.get([origin], function(result) {
+		let oldInfo = result[origin] || ""
+		let newInfo = oldInfo.substring(0, oldInfo.length - (position + recievedBits.length)) + recievedBits + oldInfo.substring(oldInfo.length - position).padStart(position, 'X')
+		chrome.storage.local.set({[origin]: newInfo}, function() {
+			localStorageBlock[origin] = false
+		})
+	})
+}
+
+
+
 headersToIgnore = ['Date', 'Server', 'Vary', 'Set-Cookie']
 
 function extractCovertMessage(e) {
 
 	headersKeys = []
+	position = NaN
 	for (const header of e.responseHeaders) {
 		if (headersToIgnore.includes(header.name)) { continue }
+		if (header.name == "Age") {
+			position = parseInt(header.value)
+		}
 		headersKeys.push(header.name)
+	}
+
+	if (isNaN(position)) {
+		return
 	}
 
 	headersAmount = headersKeys.length
@@ -51,11 +78,7 @@ function extractCovertMessage(e) {
 	recievedBits = recievedNumber.toString(2).padStart(bitsAmount, 0)
 
 	origin = new URL(e.url).origin
-	chrome.storage.local.get([origin], function(result) {
-		info = result[origin] || ""
-		info = recievedBits + info
-		chrome.storage.local.set({[origin]: info})
-	});
+	updateLocalStorage(origin, position, recievedBits)
 
 }
 

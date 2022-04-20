@@ -5,6 +5,9 @@ function updateMessage(bits) {
 	for (pos = bits.length - byteLen; pos > 0; pos -= byteLen) {
 		byte = bits.substr(pos, byteLen)
 		byte = parseInt(byte, 2)
+		if (isNaN(byte)) {
+			byte = 0
+		}
 		bytes.push(byte)
 	}
 	message.innerText = String.fromCharCode(...bytes) + "\n" + bits
